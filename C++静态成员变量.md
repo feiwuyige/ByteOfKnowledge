@@ -3,7 +3,7 @@
 1. `static`  关键字：
 
    * 用于函数定义或在代码块之外的变量声明时，修改的是链接属性，从 `external` 修改为 `internal` .
-   * 用于代码块内部的变量声明时，修改的时存储类型，从自动变量修改为静态变量。
+   * 用于代码块内部的变量声明时，修改的是存储类型，从自动变量修改为静态变量。
 
 2. 静态成员变量的使用：
 
@@ -13,9 +13,16 @@
    > int X::n = 1;              // definition (does not use 'static')
    > ```
 
-   所以， `static` 关键字是用于声明的，而非定义。
+   所以， `static` 关键字是用于声明的，而非定义。因此在类的外部定义 `static` 成员的时候，不能再使用该关键字，否则编译器会认为是在声明一个新的静态变量，而不是类的静态成员变量。
 
-3. 声明和定义：
+3. 在 C++ 中，`const` 修饰成员函数，表示该函数在调用过程中不会修改类的非静态成员变量。其作用是：
+
+   - 限制该成员函数不能修改 `this` 指针所指向对象的状态。
+   - 编译器会将 `this` 指针的类型隐式转换为 `const ClassName*`，以保证函数内部对成员变量的修改会触发编译错误。
+
+   所以静态成员函数不能声明为 `const`。
+
+4. 声明和定义：
 
    > *Declarations* are how names are introduced (or re-introduced) into the C++ program. Not all declarations actually declare anything, and each kind of entity is declared differently. [Definitions](https://en.cppreference.com/w/cpp/language/definition) are declarations that are sufficient to use the entity identified by the name.
 
@@ -60,7 +67,7 @@
    >
    > * ...
 
-4. **one defination rule**(odr):
+5. **one defination rule**(odr):
 
    > Only one definition of any variable, function, class type, enumeration type[, concept](https://en.cppreference.com/w/cpp/language/constraints)(since C++20) or template is allowed in any one translation unit (some of these may have multiple declarations, but only one definition is allowed).
    >
@@ -76,7 +83,7 @@
    >
    > If an entity is odr-used, its definition must exist somewhere in the program; a violation of that is usually a link-time error.
 
-5. 总结：
+6. 总结：
    对于类中的所有成员变量，都是声明，只有在创建对象的时候才会去开辟地址空间，也就是定义。在类中使用  `static` 关键字来声明一个变量，只是修改了这个变量的存储类型，也就是由自动变量变为静态变量，那么编译器就会在适当的存储区为其开辟地址空间。
    对于类类型而言，静态成员变量、静态成员函数属于类本身，而非对象，所以静态成员函数没有隐含的 `this` 指针，而静态成员变量则需要用户自己提供定义，考虑以下情况：
 
